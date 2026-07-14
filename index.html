@@ -734,12 +734,9 @@
     </div>
   </section>
 
-  <!-- Секция "О нас" наверху -->
   <section id="about" class="container" style="padding: 120px 0 60px;">
     <h2 class="section-title fade-up">О нас</h2>
-    <div class="fade-up" id="about-content">
-      <!-- Заполняется динамически -->
-    </div>
+    <div class="fade-up" id="about-content"></div>
   </section>
 
   <section id="works" class="container" style="padding: 60px 0 60px;">
@@ -825,6 +822,9 @@
         </div>
         <button id="add-image-field-btn" class="btn" style="padding:0.4rem 1rem;">+ фото</button>
         <button id="add-work-btn" class="btn">Добавить</button>
+        <button id="export-data-btn" class="btn" style="background:#2e7d32;">📤 Экспорт данных</button>
+        <button id="import-data-btn" class="btn" style="background:#1565c0;">📥 Импорт данных</button>
+        <input type="file" id="import-file-input" accept=".json" style="display:none;">
         <button id="logout-btn" class="btn" style="background:rgba(180,0,0,0.5);">Выйти</button>
       </div>
     </div>
@@ -847,21 +847,79 @@
       ];
       const defaultReviews = [];
 
-      let works = JSON.parse(localStorage.getItem('portfolio_works')) || defaultWorks;
-      let sketches = JSON.parse(localStorage.getItem('portfolio_sketches')) || defaultSketches;
-      let artists = JSON.parse(localStorage.getItem('site_artists')) || defaultArtists;
-      let reviews = JSON.parse(localStorage.getItem('site_reviews')) || defaultReviews;
+      let works = [...defaultWorks];
+      let sketches = [...defaultSketches];
+      let artists = [...defaultArtists];
+      let reviews = [...defaultReviews];
 
-      const normalize = arr => arr.map(w => ({
-        id: w.id,
-        title: w.title || 'Без названия',
-        description: w.description || '',
-        images: (w.images && w.images.length > 0) ? w.images : (w.src ? [w.src] : ['https://placehold.co/600x400/eee/999?text=Нет+фото'])
-      }));
-      works = normalize(works);
-      sketches = normalize(sketches);
+      async function loadDataFromJSON() {
+        try {
+          const response = await fetch('data.json');
+          if (response.ok) {
+            const json = await response.json();
+            if (json.works) works = json.works;
+            if (json.sketches) sketches = json.sketches;
+            if (json.artists) artists = json.artists;
+            if (json.reviews) reviews = json.reviews;
+            saveToLocalStorage();
+          } else {
+            loadFromLocalStorage();
+          }
+        } catch (e) {
+          loadFromLocalStorage();
+        }
+        renderAll();
+      }
 
-      let isAdmin = false;
+      function loadFromLocalStorage() {
+        const storedWorks = localStorage.getItem('portfolio_works');
+        if (storedWorks) works = JSON.parse(storedWorks);
+        const storedSketches = localStorage.getItem('portfolio_sketches');
+        if (storedSketches) sketches = JSON.parse(storedSketches);
+        const storedArtists = localStorage.getItem('site_artists');
+        if (storedArtists) artists = JSON.parse(storedArtists);
+        const storedReviews = localStorage.getItem('site_reviews');
+        if (storedReviews) reviews = JSON.parse(storedReviews);
+      }
+
+      function saveToLocalStorage() {
+        localStorage.setItem('portfolio_works', JSON.stringify(works));
+        localStorage.setItem('portfolio_sketches', JSON.stringify(sketches));
+        localStorage.setItem('site_artists', JSON.stringify(artists));
+        localStorage.setItem('site_reviews', JSON.stringify(reviews));
+      }
+
+      function exportData() {
+        const data = { works, sketches, artists, reviews };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function importData(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (data.works) works = data.works;
+            if (data.sketches) sketches = data.sketches;
+            if (data.artists) artists = data.artists;
+            if (data.reviews) reviews = data.reviews;
+            saveToLocalStorage();
+            renderAll();
+            alert('Данные успешно импортированы!');
+          } catch (err) {
+            alert('Ошибка при чтении файла. Убедитесь, что это корректный JSON.');
+          }
+        };
+        reader.readAsText(file);
+      }
 
       const galleryContainer = document.getElementById('gallery-container');
       const sketchesContainer = document.getElementById('sketches-container');
@@ -884,12 +942,16 @@
       const newDesc = document.getElementById('new-desc');
       const newImagesContainer = document.getElementById('new-images-container');
       const addImageFieldBtn = document.getElementById('add-image-field-btn');
+      const exportDataBtn = document.getElementById('export-data-btn');
+      const importDataBtn = document.getElementById('import-data-btn');
+      const importFileInput = document.getElementById('import-file-input');
       const logoutBtn = document.getElementById('logout-btn');
-      const reviewForm = document.getElementById('review-form');
       const reviewName = document.getElementById('review-name');
       const reviewText = document.getElementById('review-text');
       const submitReviewBtn = document.getElementById('submit-review');
       const reviewsList = document.getElementById('reviews-list');
+
+      let isAdmin = false;
 
       function renderArtists() {
         aboutContent.innerHTML = `
@@ -957,16 +1019,13 @@
           </div>
         `;
         universalModal.classList.add('active');
-
         const urlInput = document.getElementById('edit-photo-url');
         const fileInput = document.getElementById('edit-photo-file');
         const previewImg = document.querySelector('#photo-preview img');
-
         urlInput.addEventListener('input', () => {
           tempPhoto = urlInput.value;
           previewImg.src = tempPhoto;
         });
-
         fileInput.addEventListener('change', (e) => {
           const file = e.target.files[0];
           if (file) {
@@ -979,7 +1038,6 @@
             reader.readAsDataURL(file);
           }
         });
-
         document.getElementById('save-artist-btn').addEventListener('click', () => {
           artists[index] = {
             ...artist,
@@ -994,7 +1052,6 @@
           universalModal.classList.remove('active');
           renderArtists();
         });
-
         document.getElementById('cancel-artist-btn').addEventListener('click', () => universalModal.classList.remove('active'));
       }
 
@@ -1013,7 +1070,6 @@
           `;
           reviewsList.appendChild(card);
         });
-
         document.querySelectorAll('.admin-delete-btn').forEach(btn => {
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1059,7 +1115,6 @@
           div.setAttribute('data-id', item.id);
           div.setAttribute('data-section', sectionName);
           div.setAttribute('data-index', index);
-
           const img = document.createElement('img');
           img.src = item.images[0] || 'https://placehold.co/600x400/eee/999';
           img.alt = item.title;
@@ -1067,14 +1122,11 @@
             e.stopPropagation();
             openWorkDetail(sectionName, index);
           });
-
           const caption = document.createElement('div');
           caption.className = 'caption';
           caption.textContent = item.title;
-
           const controls = document.createElement('div');
           controls.className = 'admin-controls';
-
           const upBtn = document.createElement('button');
           upBtn.className = 'admin-btn';
           upBtn.innerHTML = '↑';
@@ -1084,7 +1136,6 @@
             e.stopPropagation();
             moveItem(sectionName, index, -1);
           });
-
           const downBtn = document.createElement('button');
           downBtn.className = 'admin-btn';
           downBtn.innerHTML = '↓';
@@ -1094,7 +1145,6 @@
             e.stopPropagation();
             moveItem(sectionName, index, 1);
           });
-
           const editBtn = document.createElement('button');
           editBtn.className = 'admin-btn';
           editBtn.innerHTML = '<i class="fas fa-edit"></i>';
@@ -1103,7 +1153,6 @@
             e.stopPropagation();
             openWorkEditor(sectionName, index);
           });
-
           const delBtn = document.createElement('button');
           delBtn.className = 'admin-btn';
           delBtn.innerHTML = '<i class="fas fa-trash"></i>';
@@ -1116,7 +1165,6 @@
               saveAndRender();
             }
           });
-
           controls.appendChild(upBtn);
           controls.appendChild(downBtn);
           controls.appendChild(editBtn);
@@ -1145,8 +1193,7 @@
       }
 
       function saveAndRender() {
-        localStorage.setItem('portfolio_works', JSON.stringify(works));
-        localStorage.setItem('portfolio_sketches', JSON.stringify(sketches));
+        saveToLocalStorage();
         renderAll();
       }
 
@@ -1158,7 +1205,6 @@
         const imgs = work.images || [];
         const description = (work.description && work.description.trim()) ? work.description : 'Описание пока не добавлено.';
         const formattedDescription = escapeHtml(description).replace(/\n/g, '<br>');
-
         modalDynamicContent.innerHTML = `
           <h3 style="font-weight:300; font-size:2.4rem; margin-bottom:1.5rem;">${escapeHtml(work.title)}</h3>
           <div class="carousel" style="display:flex; justify-content:center; margin:1.5rem 0;">
@@ -1172,12 +1218,8 @@
           <p style="color:#ddd; margin-top:2rem; font-size:1.15rem; line-height:1.6;">${formattedDescription}</p>
         `;
         universalModal.classList.add('active');
-
         const carouselImg = document.getElementById('carousel-img');
-        if (carouselImg) {
-          carouselImg.style.transition = 'opacity 0.3s ease';
-        }
-
+        if (carouselImg) carouselImg.style.transition = 'opacity 0.3s ease';
         function updateImage(fade = true) {
           if (!carouselImg) return;
           if (fade) {
@@ -1191,9 +1233,7 @@
             carouselImg.style.opacity = '1';
           }
         }
-
         updateImage(false);
-
         if (imgs.length > 1) {
           document.getElementById('prev-btn').addEventListener('click', () => {
             cur = (cur - 1 + imgs.length) % imgs.length;
@@ -1211,7 +1251,6 @@
         const arr = section === 'works' ? works : sketches;
         const work = arr[index];
         let tempImages = [...work.images];
-
         modalDynamicContent.innerHTML = `
           <h3 style="font-weight:300;">Редактирование</h3>
           <input type="text" id="edit-title" value="${escapeHtml(work.title)}" style="width:100%; margin:0.5rem 0; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">
@@ -1227,14 +1266,12 @@
           </div>
         `;
         universalModal.classList.add('active');
-
         document.getElementById('add-edit-image-btn').addEventListener('click', () => {
           const div = document.createElement('div');
           div.className = 'image-list-item';
           div.innerHTML = `<input class="edit-image-url" style="flex:1; padding:0.5rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;"><button class="admin-btn remove-image-btn">×</button>`;
           document.getElementById('edit-images-list').appendChild(div);
         });
-
         document.getElementById('save-editor-btn').addEventListener('click', () => {
           const newTitleVal = document.getElementById('edit-title').value.trim();
           const newDescVal = document.getElementById('edit-desc').value.trim();
@@ -1246,7 +1283,6 @@
           saveAndRender();
           universalModal.classList.remove('active');
         });
-
         document.getElementById('cancel-editor-btn').addEventListener('click', () => universalModal.classList.remove('active'));
       }
 
@@ -1288,14 +1324,19 @@
         const imgs = Array.from(document.querySelectorAll('.new-image-input')).map(i => i.value.trim()).filter(v => v);
         if (!title || imgs.length === 0) { alert('Введите название и хотя бы одно изображение'); return; }
         const newItem = { id: Date.now(), title, description: desc, images: imgs };
-        if (section === 'works') {
-          works.unshift(newItem);
-        } else {
-          sketches.unshift(newItem);
-        }
+        if (section === 'works') works.unshift(newItem);
+        else sketches.unshift(newItem);
         saveAndRender();
         newTitle.value = ''; newDesc.value = '';
         newImagesContainer.innerHTML = '<input type="text" class="new-image-input" placeholder="URL изображения" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.5rem; border-radius:8px;">';
+      });
+
+      exportDataBtn.addEventListener('click', exportData);
+      importDataBtn.addEventListener('click', () => importFileInput.click());
+      importFileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          importData(e.target.files[0]);
+        }
       });
 
       window.addEventListener('scroll', () => {
@@ -1309,7 +1350,7 @@
       }, { threshold: 0.2 });
       document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-      renderAll();
+      loadDataFromJSON();
     })();
   </script>
 </body>
