@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Художественная роспись стен</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0F0F10;
+      --bg-secondary: #171717;
+      --text: #F5F5F5;
+      --text-secondary: #B7B7B7;
+      --accent: #D4B26A;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-highlight: rgba(255, 255, 255, 0.25);
+      --shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+      --transition: all 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow), inset 0 1px 0 var(--glass-highlight);
+      border-radius: 24px;
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    header {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 80px);
+      max-width: 1320px;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.3s;
+    }
+
+    .logo-img {
+      height: 28px;
+      width: auto;
+      transition: filter 0.3s, transform 0.3s;
+      filter: drop-shadow(0 0 0 transparent);
+    }
+
+    .logo-container:hover .logo-img {
+      filter: drop-shadow(0 0 10px var(--accent));
+      transform: scale(1.05);
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: inherit;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: var(--text);
+    }
+
+    .burger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+    }
+
+    .burger span {
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .hero {
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('image/e9cf60e9-5f66-4573-a145-2612f8fa8643.jfif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform: scale(1.1);
+      transition: transform 0.6s ease-out;
+      will-change: transform;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem;
+      max-width: 800px;
+    }
+
+    .hero-title {
+      font-size: clamp(4.5rem, 10vw, 6.5rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -1px;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 40px rgba(0,0,0,0.6);
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.3px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 2.5rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      transition: background 0.3s, border-color 0.3s;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.16);
+      border-color: rgba(255,255,255,0.35);
+    }
+
+    .section-title {
+      font-size: 3.5rem;
+      font-weight: 300;
+      margin-bottom: 4rem;
+      text-align: center;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+      background: var(--bg-secondary);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1), filter 0.4s;
+      filter: brightness(0.9);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.04);
+      filter: brightness(0.75);
+    }
+
+    .gallery-item .caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      color: #fff;
+      font-weight: 500;
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .gallery-item:hover .caption {
+      opacity: 1;
+    }
+
+    .admin-controls {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      gap: 0.4rem;
+      z-index: 5;
+      flex-wrap: wrap;
+    }
+    .admin-mode .admin-controls {
+      display: flex;
+    }
+    .admin-btn {
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      border-radius: 50px;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .admin-btn:hover {
+      background: rgba(0,0,0,0.85);
+    }
+    .admin-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      position: relative;
+      background: rgba(20,20,20,0.95);
+      backdrop-filter: blur(40px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      max-width: 90vw;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2.5rem;
+      color: var(--text);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) rgba(255,255,255,0.05);
+    }
+    .modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    .modal-content::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+    }
+    .modal-content::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 10px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      transition: color 0.2s;
+      z-index: 10;
+    }
+    .modal-close:hover { color: #fff; }
+
+    .carousel {
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .carousel img {
+      max-height: 75vh;
+      width: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+      transition: opacity 0.3s ease;
+    }
+
+    .about-text {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .artists-row {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .artist-card {
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      padding: 2.5rem 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      box-shadow: var(--shadow), inset 0 1px 0 var(--glass-highlight);
+      position: relative;
+    }
+
+    .artist-photo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 1.5rem;
+      border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .artist-name {
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin-bottom: 0.8rem;
+      line-height: 1.2;
+    }
+
+    .artist-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .artist-meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1rem;
+      margin-top: auto;
+      width: 100%;
+    }
+
+    .artist-card .btn {
+      margin-top: 1.5rem;
+      align-self: center;
+    }
+
+    .contact-list {
+      list-style: none;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      box-shadow: var(--shadow), inset 0 1px 0 var(--glass-highlight);
+    }
+    .contact-list li {
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 0.5rem;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: background 0.3s;
+      font-size: 1.1rem;
+    }
+    .contact-list li:hover {
+      background: rgba(255,255,255,0.06);
+    }
+    .contact-list i {
+      font-size: 1.6rem;
+      color: var(--accent);
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .contact-list a {
+      color: var(--text);
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .contact-list .max-icon {
+      width: 1.6rem;
+      height: 1.6rem;
+      flex-shrink: 0;
+      filter: brightness(0) saturate(100%) invert(74%) sepia(24%) saturate(521%) hue-rotate(10deg) brightness(91%) contrast(87%);
+    }
+
+    .review-form {
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--shadow), inset 0 1px 0 var(--glass-highlight);
+    }
+    .review-form input,
+    .review-form textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+    }
+    .review-form textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .reviews-list {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .review-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow), inset 0 1px 0 var(--glass-highlight);
+      position: relative;
+    }
+    .review-card .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .review-card .review-author {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .review-card .review-date {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .review-card .review-text {
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .review-card .admin-delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(180,0,0,0.7);
+      border: none;
+      color: #fff;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .admin-mode .review-card .admin-delete-btn {
+      display: flex;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    .login-trigger {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      text-decoration: underline;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+      font-family: inherit;
+    }
+    .login-trigger:hover { opacity: 1; }
+
+    .admin-login-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+    }
+    .admin-login-modal.active { display: flex; }
+    .admin-login-box {
+      background: rgba(30,30,30,0.95);
+      backdrop-filter: blur(40px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 2.5rem;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+    }
+    .admin-login-box input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 1.2rem 0;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+    }
+    .admin-panel {
+      display: none;
+      background: rgba(20,20,20,0.95);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+    .admin-panel.active { display: block; }
+    .admin-panel select {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 0.5rem;
+      border-radius: 8px;
+      margin-right: 0.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .modal-content {
+        max-width: 95vw;
+      }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+      header { width: calc(100% - 40px); }
+      .burger { display: flex; }
+      nav ul {
+        position: fixed;
+        top: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 3rem;
+        border-radius: 24px;
+        gap: 1.5rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      nav ul.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .hero-title { font-size: 3rem; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .artists-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      .artist-card {
+        width: 100%;
+        max-width: 400px;
+      }
+      .logo-text {
+        font-size: 1rem;
+      }
+      .artist-photo {
+        width: 140px;
+        height: 140px;
+      }
+      .carousel img {
+        max-height: 50vh;
+      }
+      .about-text {
+        padding: 0 16px;
+      }
+      .modal-content p {
+        padding: 0 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="header">
+    <a href="#home" class="logo-container" aria-label="Deco Unit - на главную">
+      <img src="image/logo.svg" alt="Логотип Deco Unit" class="logo-img">
+      <span class="logo-text">Deco Unit</span>
+    </a>
+    <nav>
+      <ul id="nav-menu">
+        <li><a href="#about">О нас</a></li>
+        <li><a href="#works" class="active">Работы</a></li>
+        <li><a href="#sketches">Эскизы</a></li>
+        <li><a href="#contacts">Контакты</a></li>
+        <li><a href="#reviews">Отзывы</a></li>
+      </ul>
+    </nav>
+    <div class="burger" id="burger">
+      <span></span><span></span><span></span>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content fade-up">
+      <h1 class="hero-title">Преобразим ваш интерьер</h1>
+      <p class="hero-subtitle">Художественная роспись стен любой сложности</p>
+      <a href="#works" class="btn">Смотреть работы</a>
+    </div>
+  </section>
+
+  <!-- Секция "О нас" наверху -->
+  <section id="about" class="container" style="padding: 120px 0 60px;">
+    <h2 class="section-title fade-up">О нас</h2>
+    <div class="fade-up" id="about-content">
+      <!-- Заполняется динамически -->
+    </div>
+  </section>
+
+  <section id="works" class="container" style="padding: 60px 0 60px;">
+    <h2 class="section-title fade-up">Избранные проекты</h2>
+    <div class="gallery-grid" id="gallery-container"></div>
+  </section>
+
+  <section id="sketches" class="container" style="padding: 60px 0 100px;">
+    <h2 class="section-title fade-up">Эскизы</h2>
+    <div class="gallery-grid" id="sketches-container"></div>
+  </section>
+
+  <div class="modal" id="universal-modal">
+    <span class="modal-close" id="modal-close">&times;</span>
+    <div class="modal-content" id="modal-dynamic-content"></div>
+  </div>
+
+  <section id="contacts" class="container" style="padding: 100px 0;">
+    <h2 class="section-title fade-up">Контакты</h2>
+    <ul class="contact-list fade-up">
+      <li>
+        <i class="fas fa-phone-alt"></i>
+        <a href="tel:+79896242060">+7 (989) 624-20-60</a>
+      </li>
+      <li>
+        <i class="fab fa-telegram-plane"></i>
+        <a href="https://t.me/rospisstenrnd" target="_blank">Telegram</a>
+      </li>
+      <li>
+        <i class="fab fa-vk"></i>
+        <a href="https://vk.ru/club239961501" target="_blank">VK</a>
+      </li>
+      <li>
+        <img src="image/max-messenger.svg" alt="Max" class="max-icon">
+        <a href="https://max.ru/join/npifpOJq_ig_JoPQdLhv3NLx4hE06h9pWqzS6NuMjcc" target="_blank">Max</a>
+      </li>
+      <li>
+        <i class="fas fa-envelope"></i>
+        <a href="mailto:rospis.sten@internet.ru">rospis.sten@internet.ru</a>
+      </li>
+    </ul>
+  </section>
+
+  <section id="reviews" class="container" style="padding: 100px 0;">
+    <h2 class="section-title fade-up">Отзывы</h2>
+    <div class="fade-up">
+      <div class="review-form" id="review-form">
+        <input type="text" id="review-name" placeholder="Ваше имя" required>
+        <textarea id="review-text" placeholder="Ваш отзыв" required></textarea>
+        <button id="submit-review" class="btn">Отправить отзыв</button>
+      </div>
+      <div class="reviews-list" id="reviews-list"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Художественная роспись стен. Все права защищены.</p>
+    <button class="login-trigger" id="login-trigger-btn">Войти в админку</button>
+  </footer>
+
+  <div class="admin-login-modal" id="admin-login-modal">
+    <div class="admin-login-box">
+      <h3 style="font-weight:300; color:#fff;">Вход</h3>
+      <input type="password" id="admin-password" placeholder="Пароль">
+      <div style="color:#c0392b; font-size:0.9rem;" id="login-error"></div>
+      <button class="btn" id="login-submit" style="margin-top:1rem;">Войти</button>
+      <button class="btn" id="login-cancel" style="background:transparent; border-color:transparent; margin-top:0.5rem;">Отмена</button>
+    </div>
+  </div>
+
+  <div class="container" style="padding-bottom: 40px;">
+    <div class="admin-panel" id="admin-panel">
+      <h4 style="font-weight:300; margin-bottom:1rem;">Управление работами</h4>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+        <select id="section-select">
+          <option value="works">Проекты</option>
+          <option value="sketches">Эскизы</option>
+        </select>
+        <input type="text" id="new-title" placeholder="Название" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.5rem; border-radius:8px;">
+        <textarea id="new-desc" placeholder="Описание" rows="2" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.5rem; border-radius:8px; resize:vertical;"></textarea>
+        <div id="new-images-container" style="display:flex; flex-direction:column; gap:0.3rem;">
+          <input type="text" class="new-image-input" placeholder="URL изображения" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.5rem; border-radius:8px;">
+        </div>
+        <button id="add-image-field-btn" class="btn" style="padding:0.4rem 1rem;">+ фото</button>
+        <button id="add-work-btn" class="btn">Добавить</button>
+        <button id="logout-btn" class="btn" style="background:rgba(180,0,0,0.5);">Выйти</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const defaultWorks = [
+        { id: 1, title: 'Цветочная фреска', description: 'Нежная ручная роспись в стиле прованс. Акриловые краски.', images: ['https://placehold.co/600x800/f7f7f7/333?text=Работа+1', 'https://placehold.co/600x800/e8e8e8/333?text=Деталь+1'] },
+        { id: 2, title: 'Геометрическая абстракция', description: 'Современный минимализм для офиса.', images: ['https://placehold.co/600x800/e8e8e8/333?text=Работа+2', 'https://placehold.co/600x800/f0f0f0/333?text=Фрагмент'] },
+        { id: 3, title: 'Пейзаж в гостиной', description: 'Панорамный вид на горы.', images: ['https://placehold.co/600x800/dedede/333?text=Работа+3'] }
+      ];
+      const defaultSketches = [
+        { id: 101, title: 'Эскиз "Весенний сад"', description: 'Акварельный эскиз для детской комнаты.', images: ['https://placehold.co/600x800/f0f0f0/333?text=Эскиз+1', 'https://placehold.co/600x800/e0e0e0/333?text=Эскиз+1b'] },
+        { id: 102, title: 'Эскиз "Городской мотив"', description: 'Чёрно-белая графика для лофта.', images: ['https://placehold.co/600x800/d0d0d0/333?text=Эскиз+2'] }
+      ];
+      const defaultArtists = [
+        { id: 1, name: 'Мария', surname: 'Косарева', desc: 'Художник-живописец, монументалист, преподаватель с 4-летним опытом работы. Создаю росписи любой сложности в любых стилях и жанрах.', photo: 'https://placehold.co/400x500/f0f0f0/333?text=Мария+Косарева', experience: '4 года', spec: 'реализм (пейзаж, натюрморт, портрет)' },
+        { id: 2, name: 'Никита', surname: 'Подколзин', desc: 'Специалист по геометрическим абстракциям и минимализму. Графический дизайнер.', photo: 'https://placehold.co/400x500/f0f0f0/333?text=Никита+Подколзин', experience: '2,5 года', spec: 'геометрия, минимализм, типографика' }
+      ];
+      const defaultReviews = [];
+
+      let works = JSON.parse(localStorage.getItem('portfolio_works')) || defaultWorks;
+      let sketches = JSON.parse(localStorage.getItem('portfolio_sketches')) || defaultSketches;
+      let artists = JSON.parse(localStorage.getItem('site_artists')) || defaultArtists;
+      let reviews = JSON.parse(localStorage.getItem('site_reviews')) || defaultReviews;
+
+      const normalize = arr => arr.map(w => ({
+        id: w.id,
+        title: w.title || 'Без названия',
+        description: w.description || '',
+        images: (w.images && w.images.length > 0) ? w.images : (w.src ? [w.src] : ['https://placehold.co/600x400/eee/999?text=Нет+фото'])
+      }));
+      works = normalize(works);
+      sketches = normalize(sketches);
+
+      let isAdmin = false;
+
+      const galleryContainer = document.getElementById('gallery-container');
+      const sketchesContainer = document.getElementById('sketches-container');
+      const aboutContent = document.getElementById('about-content');
+      const universalModal = document.getElementById('universal-modal');
+      const modalClose = document.getElementById('modal-close');
+      const modalDynamicContent = document.getElementById('modal-dynamic-content');
+      const burger = document.getElementById('burger');
+      const navMenu = document.getElementById('nav-menu');
+      const loginTrigger = document.getElementById('login-trigger-btn');
+      const adminLoginModal = document.getElementById('admin-login-modal');
+      const adminPasswordInput = document.getElementById('admin-password');
+      const loginSubmit = document.getElementById('login-submit');
+      const loginCancel = document.getElementById('login-cancel');
+      const loginError = document.getElementById('login-error');
+      const adminPanel = document.getElementById('admin-panel');
+      const sectionSelect = document.getElementById('section-select');
+      const addWorkBtn = document.getElementById('add-work-btn');
+      const newTitle = document.getElementById('new-title');
+      const newDesc = document.getElementById('new-desc');
+      const newImagesContainer = document.getElementById('new-images-container');
+      const addImageFieldBtn = document.getElementById('add-image-field-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      const reviewForm = document.getElementById('review-form');
+      const reviewName = document.getElementById('review-name');
+      const reviewText = document.getElementById('review-text');
+      const submitReviewBtn = document.getElementById('submit-review');
+      const reviewsList = document.getElementById('reviews-list');
+
+      function renderArtists() {
+        aboutContent.innerHTML = `
+          <div class="about-text">
+            <p>Мы Deco Unit — команда профессиональных художников-декораторов из Ростовской области. С 2025 года создаём уникальные интерьеры с помощью ручной росписи стен. Работаем с частными заказчиками, кафе, ресторанами и офисами. Каждый проект — это авторский эскиз и тщательная проработка деталей. Используем только качественные, экологичные материалы.</p>
+            <p style="margin-top: 1rem;">Мы постоянно сотрудничаем с различными художниками из Ростова-на-Дону и области, в планах коллаборации с представителями московской и питерской творческой сцены.</p>
+          </div>
+          <div class="artists-row" id="artists-cards"></div>
+        `;
+        const artistsCards = document.getElementById('artists-cards');
+        artists.forEach((artist, index) => {
+          const card = document.createElement('div');
+          card.className = 'artist-card';
+          card.innerHTML = `
+            <img src="${artist.photo}" alt="${artist.name} ${artist.surname}" class="artist-photo">
+            <h3 class="artist-name">${artist.name}<br>${artist.surname}</h3>
+            <p class="artist-desc">${artist.desc}</p>
+            <div class="artist-meta">
+              <p><strong>Стаж:</strong> ${artist.experience}</p>
+              <p><strong>Специализация:</strong> ${artist.spec}</p>
+            </div>
+            <a href="#contacts" class="btn">Связаться</a>
+          `;
+          if (isAdmin) {
+            const editBtn = document.createElement('button');
+            editBtn.className = 'admin-btn';
+            editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            editBtn.style.position = 'absolute';
+            editBtn.style.top = '10px';
+            editBtn.style.right = '10px';
+            editBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              openArtistEditor(index);
+            });
+            card.appendChild(editBtn);
+          }
+          artistsCards.appendChild(card);
+        });
+      }
+
+      function openArtistEditor(index) {
+        const artist = artists[index];
+        let tempPhoto = artist.photo;
+        modalDynamicContent.innerHTML = `
+          <h3 style="font-weight:300; margin-bottom:1rem;">Редактирование художника</h3>
+          <input type="text" id="edit-name" value="${escapeHtml(artist.name)}" placeholder="Имя" style="width:100%; margin:0.5rem 0; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">
+          <input type="text" id="edit-surname" value="${escapeHtml(artist.surname)}" placeholder="Фамилия" style="width:100%; margin:0.5rem 0; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">
+          <textarea id="edit-desc" rows="3" placeholder="Описание" style="width:100%; margin:0.5rem 0; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">${escapeHtml(artist.desc)}</textarea>
+          <input type="text" id="edit-experience" value="${escapeHtml(artist.experience)}" placeholder="Стаж" style="width:100%; margin:0.5rem 0; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">
+          <input type="text" id="edit-spec" value="${escapeHtml(artist.spec)}" placeholder="Специализация" style="width:100%; margin:0.5rem 0; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">
+          <div style="margin:1rem 0;">
+            <p style="color: var(--text-secondary); margin-bottom:0.5rem;">Фото (URL или загрузите файл)</p>
+            <input type="text" id="edit-photo-url" value="${tempPhoto}" placeholder="URL фото" style="width:100%; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; margin-bottom:0.5rem;">
+            <input type="file" id="edit-photo-file" accept="image/*" style="color: #fff;">
+            <div style="margin-top:0.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div id="photo-preview" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,0.1);">
+                <img src="${tempPhoto}" style="width:100%; height:100%; object-fit: cover;">
+              </div>
+              <span style="color: var(--text-secondary);">Предпросмотр</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1rem;">
+            <button id="save-artist-btn" class="btn">Сохранить</button>
+            <button id="cancel-artist-btn" class="btn" style="background:transparent; border-color:transparent;">Отмена</button>
+          </div>
+        `;
+        universalModal.classList.add('active');
+
+        const urlInput = document.getElementById('edit-photo-url');
+        const fileInput = document.getElementById('edit-photo-file');
+        const previewImg = document.querySelector('#photo-preview img');
+
+        urlInput.addEventListener('input', () => {
+          tempPhoto = urlInput.value;
+          previewImg.src = tempPhoto;
+        });
+
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              tempPhoto = event.target.result;
+              previewImg.src = tempPhoto;
+              urlInput.value = '';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        document.getElementById('save-artist-btn').addEventListener('click', () => {
+          artists[index] = {
+            ...artist,
+            name: document.getElementById('edit-name').value.trim(),
+            surname: document.getElementById('edit-surname').value.trim(),
+            desc: document.getElementById('edit-desc').value.trim(),
+            experience: document.getElementById('edit-experience').value.trim(),
+            spec: document.getElementById('edit-spec').value.trim(),
+            photo: tempPhoto
+          };
+          localStorage.setItem('site_artists', JSON.stringify(artists));
+          universalModal.classList.remove('active');
+          renderArtists();
+        });
+
+        document.getElementById('cancel-artist-btn').addEventListener('click', () => universalModal.classList.remove('active'));
+      }
+
+      function renderReviews() {
+        reviewsList.innerHTML = '';
+        reviews.forEach((review, index) => {
+          const card = document.createElement('div');
+          card.className = 'review-card';
+          card.innerHTML = `
+            <div class="review-header">
+              <span class="review-author">${escapeHtml(review.name)}</span>
+              <span class="review-date">${new Date(review.date).toLocaleDateString()}</span>
+            </div>
+            <div class="review-text">${escapeHtml(review.text).replace(/\n/g, '<br>')}</div>
+            <button class="admin-delete-btn" data-index="${index}" title="Удалить отзыв"><i class="fas fa-times"></i></button>
+          `;
+          reviewsList.appendChild(card);
+        });
+
+        document.querySelectorAll('.admin-delete-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const idx = parseInt(btn.getAttribute('data-index'));
+            if (confirm('Удалить этот отзыв?')) {
+              reviews.splice(idx, 1);
+              saveReviews();
+              renderReviews();
+            }
+          });
+        });
+      }
+
+      function saveReviews() {
+        localStorage.setItem('site_reviews', JSON.stringify(reviews));
+      }
+
+      submitReviewBtn.addEventListener('click', () => {
+        const name = reviewName.value.trim();
+        const text = reviewText.value.trim();
+        if (!name || !text) {
+          alert('Пожалуйста, заполните имя и текст отзыва.');
+          return;
+        }
+        const newReview = {
+          id: Date.now(),
+          name,
+          text,
+          date: new Date().toISOString()
+        };
+        reviews.push(newReview);
+        saveReviews();
+        renderReviews();
+        reviewName.value = '';
+        reviewText.value = '';
+      });
+
+      function renderSection(container, items, sectionName) {
+        container.innerHTML = '';
+        items.forEach((item, index) => {
+          const div = document.createElement('div');
+          div.className = 'gallery-item';
+          div.setAttribute('data-id', item.id);
+          div.setAttribute('data-section', sectionName);
+          div.setAttribute('data-index', index);
+
+          const img = document.createElement('img');
+          img.src = item.images[0] || 'https://placehold.co/600x400/eee/999';
+          img.alt = item.title;
+          img.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openWorkDetail(sectionName, index);
+          });
+
+          const caption = document.createElement('div');
+          caption.className = 'caption';
+          caption.textContent = item.title;
+
+          const controls = document.createElement('div');
+          controls.className = 'admin-controls';
+
+          const upBtn = document.createElement('button');
+          upBtn.className = 'admin-btn';
+          upBtn.innerHTML = '↑';
+          upBtn.title = 'Переместить вверх';
+          upBtn.disabled = index === 0;
+          upBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            moveItem(sectionName, index, -1);
+          });
+
+          const downBtn = document.createElement('button');
+          downBtn.className = 'admin-btn';
+          downBtn.innerHTML = '↓';
+          downBtn.title = 'Переместить вниз';
+          downBtn.disabled = index === items.length - 1;
+          downBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            moveItem(sectionName, index, 1);
+          });
+
+          const editBtn = document.createElement('button');
+          editBtn.className = 'admin-btn';
+          editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+          editBtn.title = 'Редактировать';
+          editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openWorkEditor(sectionName, index);
+          });
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'admin-btn';
+          delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+          delBtn.title = 'Удалить';
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm('Удалить?')) {
+              const arr = sectionName === 'works' ? works : sketches;
+              arr.splice(index, 1);
+              saveAndRender();
+            }
+          });
+
+          controls.appendChild(upBtn);
+          controls.appendChild(downBtn);
+          controls.appendChild(editBtn);
+          controls.appendChild(delBtn);
+          div.appendChild(img);
+          div.appendChild(caption);
+          div.appendChild(controls);
+          container.appendChild(div);
+        });
+      }
+
+      function moveItem(section, index, direction) {
+        const arr = section === 'works' ? works : sketches;
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= arr.length) return;
+        [arr[index], arr[newIndex]] = [arr[newIndex], arr[index]];
+        saveAndRender();
+      }
+
+      function renderAll() {
+        renderArtists();
+        renderSection(galleryContainer, works, 'works');
+        renderSection(sketchesContainer, sketches, 'sketches');
+        document.body.classList.toggle('admin-mode', isAdmin);
+        renderReviews();
+      }
+
+      function saveAndRender() {
+        localStorage.setItem('portfolio_works', JSON.stringify(works));
+        localStorage.setItem('portfolio_sketches', JSON.stringify(sketches));
+        renderAll();
+      }
+
+      function openWorkDetail(section, index) {
+        const arr = section === 'works' ? works : sketches;
+        const work = arr[index];
+        if (!work) return;
+        let cur = 0;
+        const imgs = work.images || [];
+        const description = (work.description && work.description.trim()) ? work.description : 'Описание пока не добавлено.';
+        const formattedDescription = escapeHtml(description).replace(/\n/g, '<br>');
+
+        modalDynamicContent.innerHTML = `
+          <h3 style="font-weight:300; font-size:2.4rem; margin-bottom:1.5rem;">${escapeHtml(work.title)}</h3>
+          <div class="carousel" style="display:flex; justify-content:center; margin:1.5rem 0;">
+            <img src="${escapeHtml(imgs[cur])}" id="carousel-img" style="max-height:75vh; width:100%; object-fit:contain; border-radius:12px;">
+          </div>
+          ${imgs.length > 1 ? `
+            <div style="display:flex; justify-content:center; gap:1rem; margin-top:1.5rem;">
+              <button id="prev-btn" class="btn" style="padding:0.5rem 1.2rem;"><i class="fas fa-chevron-left"></i></button>
+              <button id="next-btn" class="btn" style="padding:0.5rem 1.2rem;"><i class="fas fa-chevron-right"></i></button>
+            </div>` : ''}
+          <p style="color:#ddd; margin-top:2rem; font-size:1.15rem; line-height:1.6;">${formattedDescription}</p>
+        `;
+        universalModal.classList.add('active');
+
+        const carouselImg = document.getElementById('carousel-img');
+        if (carouselImg) {
+          carouselImg.style.transition = 'opacity 0.3s ease';
+        }
+
+        function updateImage(fade = true) {
+          if (!carouselImg) return;
+          if (fade) {
+            carouselImg.style.opacity = '0';
+            setTimeout(() => {
+              carouselImg.src = imgs[cur];
+              carouselImg.style.opacity = '1';
+            }, 200);
+          } else {
+            carouselImg.src = imgs[cur];
+            carouselImg.style.opacity = '1';
+          }
+        }
+
+        updateImage(false);
+
+        if (imgs.length > 1) {
+          document.getElementById('prev-btn').addEventListener('click', () => {
+            cur = (cur - 1 + imgs.length) % imgs.length;
+            updateImage(true);
+          });
+          document.getElementById('next-btn').addEventListener('click', () => {
+            cur = (cur + 1) % imgs.length;
+            updateImage(true);
+          });
+        }
+      }
+
+      function openWorkEditor(section, index) {
+        if (!isAdmin) return;
+        const arr = section === 'works' ? works : sketches;
+        const work = arr[index];
+        let tempImages = [...work.images];
+
+        modalDynamicContent.innerHTML = `
+          <h3 style="font-weight:300;">Редактирование</h3>
+          <input type="text" id="edit-title" value="${escapeHtml(work.title)}" style="width:100%; margin:0.5rem 0; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">
+          <textarea id="edit-desc" rows="5" style="width:100%; margin:0.5rem 0; padding:0.6rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">${escapeHtml(work.description)}</textarea>
+          <div id="edit-images-list">${tempImages.map((img,i) => `<div class="image-list-item" style="display:flex; gap:0.5rem; margin:0.3rem 0;">
+            <input value="${escapeHtml(img)}" class="edit-image-url" style="flex:1; padding:0.5rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;">
+            <button class="admin-btn remove-image-btn">×</button>
+          </div>`).join('')}</div>
+          <button id="add-edit-image-btn" class="btn" style="padding:0.4rem 1rem;">+ фото</button>
+          <div style="margin-top:1rem; display:flex; gap:0.5rem; justify-content:flex-end;">
+            <button id="save-editor-btn" class="btn">Сохранить</button>
+            <button id="cancel-editor-btn" class="btn" style="background:transparent; border-color:transparent;">Отмена</button>
+          </div>
+        `;
+        universalModal.classList.add('active');
+
+        document.getElementById('add-edit-image-btn').addEventListener('click', () => {
+          const div = document.createElement('div');
+          div.className = 'image-list-item';
+          div.innerHTML = `<input class="edit-image-url" style="flex:1; padding:0.5rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px;"><button class="admin-btn remove-image-btn">×</button>`;
+          document.getElementById('edit-images-list').appendChild(div);
+        });
+
+        document.getElementById('save-editor-btn').addEventListener('click', () => {
+          const newTitleVal = document.getElementById('edit-title').value.trim();
+          const newDescVal = document.getElementById('edit-desc').value.trim();
+          const newImages = Array.from(document.querySelectorAll('.edit-image-url')).map(inp => inp.value.trim()).filter(v => v);
+          if (!newTitleVal || newImages.length === 0) { alert('Заполните название и хотя бы одно изображение'); return; }
+          work.title = newTitleVal;
+          work.description = newDescVal;
+          work.images = newImages;
+          saveAndRender();
+          universalModal.classList.remove('active');
+        });
+
+        document.getElementById('cancel-editor-btn').addEventListener('click', () => universalModal.classList.remove('active'));
+      }
+
+      function escapeHtml(t) { return t.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+      modalClose.addEventListener('click', () => universalModal.classList.remove('active'));
+      universalModal.addEventListener('click', e => { if (e.target === universalModal) universalModal.classList.remove('active'); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && universalModal.classList.contains('active')) universalModal.classList.remove('active'); });
+
+      burger.addEventListener('click', () => navMenu.classList.toggle('active'));
+      navMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', () => navMenu.classList.remove('active')));
+
+      loginTrigger.addEventListener('click', () => { adminLoginModal.classList.add('active'); adminPasswordInput.value = ''; loginError.textContent = ''; });
+      loginCancel.addEventListener('click', () => adminLoginModal.classList.remove('active'));
+      adminLoginModal.addEventListener('click', e => { if (e.target === adminLoginModal) adminLoginModal.classList.remove('active'); });
+      loginSubmit.addEventListener('click', () => {
+        if (adminPasswordInput.value === 'ultra11U') {
+          isAdmin = true;
+          adminLoginModal.classList.remove('active');
+          adminPanel.classList.add('active');
+          renderAll();
+        } else loginError.textContent = 'Неверный пароль';
+      });
+      adminPasswordInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginSubmit.click(); });
+      logoutBtn.addEventListener('click', () => { isAdmin = false; adminPanel.classList.remove('active'); renderAll(); });
+
+      addImageFieldBtn.addEventListener('click', () => {
+        const inp = document.createElement('input');
+        inp.type = 'text'; inp.className = 'new-image-input';
+        inp.placeholder = 'URL изображения';
+        inp.style.cssText = 'background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.5rem; border-radius:8px;';
+        newImagesContainer.appendChild(inp);
+      });
+
+      addWorkBtn.addEventListener('click', () => {
+        const section = sectionSelect.value;
+        const title = newTitle.value.trim();
+        const desc = newDesc.value.trim();
+        const imgs = Array.from(document.querySelectorAll('.new-image-input')).map(i => i.value.trim()).filter(v => v);
+        if (!title || imgs.length === 0) { alert('Введите название и хотя бы одно изображение'); return; }
+        const newItem = { id: Date.now(), title, description: desc, images: imgs };
+        if (section === 'works') {
+          works.unshift(newItem);
+        } else {
+          sketches.unshift(newItem);
+        }
+        saveAndRender();
+        newTitle.value = ''; newDesc.value = '';
+        newImagesContainer.innerHTML = '<input type="text" class="new-image-input" placeholder="URL изображения" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.5rem; border-radius:8px;">';
+      });
+
+      window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const bg = document.getElementById('hero-bg');
+        if (bg) bg.style.transform = `scale(1.1) translateY(${scrolled * 0.15}px)`;
+      });
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { threshold: 0.2 });
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>
