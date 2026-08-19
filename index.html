@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -699,7 +700,6 @@
       .about-text {
         padding: 0 16px;
       }
-      /* Улучшения для модального окна и описания на мобильных */
       .modal-content {
         max-width: 95vw;
         padding: 1.5rem;
@@ -721,6 +721,7 @@
         <li><a href="#about">О нас</a></li>
         <li><a href="#works" class="active">Работы</a></li>
         <li><a href="#sketches">Эскизы</a></li>
+        <li><a href="#prices">Цена</a></li>
         <li><a href="#contacts">Контакты</a></li>
         <li><a href="#reviews">Отзывы</a></li>
       </ul>
@@ -755,6 +756,47 @@
     <div class="gallery-grid" id="sketches-container"></div>
   </section>
 
+  <!-- Новый раздел "Цены" -->
+  <section id="prices" class="container" style="padding: 60px 0 100px;">
+    <h2 class="section-title fade-up">Цены</h2>
+    <div class="fade-up" style="max-width: 900px; margin: 0 auto; background: var(--glass-bg); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 32px; padding: 2rem; box-shadow: var(--shadow), inset 0 1px 0 var(--glass-highlight);">
+      <table style="width: 100%; border-collapse: collapse; color: var(--text);">
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500;">Услуга</th>
+            <th style="text-align: left; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500;">Ориентир цены</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">Простой рисунок/детская, типовой сюжет</td>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">от 1500–2500 ₽/м²</td>
+          </tr>
+          <tr>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">Индивидуальный эскиз, интерьер</td>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">от 2500–4000 ₽/м²</td>
+          </tr>
+          <tr>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">Коммерческие помещения (кафе, офис, магазин)</td>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">от 3000–5000 ₽/м² + фикс. плата за разработку концепции 2500 ₽</td>
+          </tr>
+          <tr>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">Фасад/мурал (без высотных работ)</td>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">от 2500–4000 ₽/м²</td>
+          </tr>
+          <tr>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">Фасад/мурал с высотными работами (вышка/альпснаряжение)</td>
+            <td style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">от 4000 ₽/м² + отдельная смета на оборудование</td>
+          </tr>
+          <tr>
+            <td style="padding: 1rem;">Мастер-класс / выездная роспись на мероприятии</td>
+            <td style="padding: 1rem;">фикс. цена за час/мероприятие, отдельный прайс - согласовывается в зависимости от типа мероприятия</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <div class="modal" id="universal-modal">
     <span class="modal-close" id="modal-close">&times;</span>
     <div class="modal-content" id="modal-dynamic-content"></div>
@@ -772,7 +814,7 @@
       </li>
       <li>
         <i class="fab fa-telegram-plane"></i>
-        <a href="https://t.me/decounit" target="_blank">Telegram</a>
+        <a href="https://t.me/rospisstenrnd" target="_blank">Telegram</a>
       </li>
       <li>
         <i class="fab fa-vk"></i>
@@ -780,7 +822,7 @@
       </li>
       <li>
         <img src="image/max-messenger.svg" alt="Max" class="max-icon">
-        <a href="https://max.ru/channel_deco_unit" target="_blank">Max</a>
+        <a href="https://max.ru/join/npifpOJq_ig_JoPQdLhv3NLx4hE06h9pWqzS6NuMjcc" target="_blank">Max</a>
       </li>
       <li>
         <i class="fas fa-envelope"></i>
@@ -1364,3 +1406,4 @@
   </script>
 </body>
 </html>
+```
